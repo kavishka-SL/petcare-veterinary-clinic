@@ -1,0 +1,89 @@
+<jasperReport name="BillableItemUsageReport" language="java"
+        pageWidth="842" pageHeight="595" orientation="Landscape"
+        columnWidth="802" leftMargin="20" rightMargin="20"
+        topMargin="20" bottomMargin="20" whenNoDataType="NoDataSection"
+        uuid="4710bbc2-f839-4db6-b413-058979319b46">
+
+    <style name="Base" fontName="Segoe UI" fontSize="8.0"/>
+    <style name="Header" style="Base" mode="Opaque" backcolor="#2F5597" forecolor="#FFFFFF" bold="true" hTextAlign="Center" vTextAlign="Middle"/>
+    <style name="Cell" style="Base" vTextAlign="Middle"/>
+    <style name="Amount" style="Cell" hTextAlign="Right"/>
+
+    <query language="SQL"><![CDATA[
+SELECT
+    a.appointment_id AS appointment_number,
+    c.full_name AS customer_name,
+    p.pet_name,
+    bi.item_type,
+    bi.item_name,
+    s.service_name,
+    ai.quantity,
+    ai.unit_price,
+    (ai.quantity * ai.unit_price) AS subtotal
+FROM appointment_items ai
+INNER JOIN billable_items bi ON ai.item_id = bi.item_id
+INNER JOIN appointments a ON ai.appointment_id = a.appointment_id
+INNER JOIN pets p ON a.pet_id = p.pet_id
+INNER JOIN customers c ON p.customer_id = c.customer_id
+INNER JOIN services s ON bi.service_id = s.service_id
+ORDER BY a.appointment_id DESC, ai.appointment_item_id
+    ]]></query>
+
+    <field name="appointment_number" class="java.lang.Integer"/>
+    <field name="customer_name" class="java.lang.String"/>
+    <field name="pet_name" class="java.lang.String"/>
+    <field name="item_type" class="java.lang.String"/>
+    <field name="item_name" class="java.lang.String"/>
+    <field name="service_name" class="java.lang.String"/>
+    <field name="quantity" class="java.lang.Integer"/>
+    <field name="unit_price" class="java.math.BigDecimal"/>
+    <field name="subtotal" class="java.math.BigDecimal"/>
+
+    <variable name="TotalItemRevenue" class="java.math.BigDecimal" calculation="Sum">
+        <expression><![CDATA[$F{subtotal}]]></expression>
+        <initialValueExpression><![CDATA[java.math.BigDecimal.ZERO]]></initialValueExpression>
+    </variable>
+
+    <background splitType="Stretch"/>
+    <title height="60" splitType="Stretch">
+        <element kind="staticText" uuid="e764d0c4-a1c1-4807-8b1c-24f25fc85ee9" x="0" y="0" width="802" height="30" forecolor="#01043D" fontName="Segoe UI" fontSize="22.0" bold="true" hTextAlign="Center"><text><![CDATA[PetCare Veterinary Clinic]]></text></element>
+        <element kind="staticText" uuid="e3c7051e-5b3a-41e4-aa70-1398355748e1" x="0" y="35" width="802" height="20" fontName="Segoe UI" fontSize="12.0" hTextAlign="Center"><text><![CDATA[Billable Item Usage Report]]></text></element>
+    </title>
+    <pageHeader height="20" splitType="Stretch">
+        <element kind="textField" uuid="ef9a0b53-dadf-41c2-a181-851f085bf807" x="552" y="0" width="250" height="18" forecolor="#636363" fontName="Segoe UI" fontSize="9.0" hTextAlign="Right"><expression><![CDATA["Generated: " + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date())]]></expression></element>
+    </pageHeader>
+    <columnHeader height="30" splitType="Stretch">
+        <element kind="staticText" style="Header" uuid="66662291-016e-4b7d-8d24-bcc5559c3c08" x="0" y="0" width="55" height="30"><text><![CDATA[Appt ID]]></text></element>
+        <element kind="staticText" style="Header" uuid="fe9099c6-15a6-45e3-a41c-8c394a6ccfd4" x="55" y="0" width="110" height="30"><text><![CDATA[Customer]]></text></element>
+        <element kind="staticText" style="Header" uuid="9f50d1d6-6fbb-4e77-b3f4-1ab1bb07af43" x="165" y="0" width="70" height="30"><text><![CDATA[Pet]]></text></element>
+        <element kind="staticText" style="Header" uuid="a73051c9-a53d-4b9b-8e01-e11ac8663d80" x="235" y="0" width="90" height="30"><text><![CDATA[Item Type]]></text></element>
+        <element kind="staticText" style="Header" uuid="e26cfb02-b908-4c5d-af7a-55cde255e565" x="325" y="0" width="150" height="30"><text><![CDATA[Item]]></text></element>
+        <element kind="staticText" style="Header" uuid="e2fa830a-b712-4083-8bdd-8beaf640bc35" x="475" y="0" width="120" height="30"><text><![CDATA[Service]]></text></element>
+        <element kind="staticText" style="Header" uuid="5978b929-57e3-4499-896f-a26cf9f3d0cf" x="595" y="0" width="50" height="30"><text><![CDATA[Qty]]></text></element>
+        <element kind="staticText" style="Header" uuid="626a7b39-6724-4512-91e8-25799a8c36b5" x="645" y="0" width="75" height="30"><text><![CDATA[Unit Price]]></text></element>
+        <element kind="staticText" style="Header" uuid="c2480697-a2ff-4aa1-8ff8-c39043257e3e" x="720" y="0" width="82" height="30"><text><![CDATA[Subtotal]]></text></element>
+    </columnHeader>
+    <detail>
+        <band height="24" splitType="Stretch">
+            <element kind="textField" style="Cell" uuid="874cffdf-62b1-482f-b5f7-ac0182487d85" x="0" y="0" width="55" height="24"><expression><![CDATA[$F{appointment_number}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="7490cf07-cb2f-4309-bfbb-46bdcd8a8229" x="55" y="0" width="110" height="24"><expression><![CDATA[$F{customer_name}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="f48ace8a-e479-43e6-b009-d269e3158cb7" x="165" y="0" width="70" height="24"><expression><![CDATA[$F{pet_name}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="0f8755c9-b55e-458f-b1a5-d61f8dde2658" x="235" y="0" width="90" height="24"><expression><![CDATA[$F{item_type}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="74be2fa0-6d29-405b-b950-749214264e76" x="325" y="0" width="150" height="24"><expression><![CDATA[$F{item_name}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="89908503-61ea-48ad-9f1c-334042009a1f" x="475" y="0" width="120" height="24"><expression><![CDATA[$F{service_name}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="40473938-07bb-49f0-aeca-184c33d90977" x="595" y="0" width="50" height="24"><expression><![CDATA[$F{quantity}]]></expression></element>
+            <element kind="textField" style="Amount" pattern="#,##0.00" uuid="67056c07-88cf-48de-9b9b-dce82a900b82" x="645" y="0" width="75" height="24"><expression><![CDATA[$F{unit_price}]]></expression></element>
+            <element kind="textField" style="Amount" pattern="#,##0.00" uuid="f14d7ae0-b79f-47e3-8cd1-ccae0b649354" x="720" y="0" width="82" height="24"><expression><![CDATA[$F{subtotal}]]></expression></element>
+        </band>
+    </detail>
+    <pageFooter height="24" splitType="Stretch">
+        <element kind="textField" uuid="fbb67c5f-5a0b-4076-9fc9-1e12b361862e" x="650" y="2" width="150" height="20" forecolor="#777777" fontSize="8.0" hTextAlign="Center"><expression><![CDATA["Page " + $V{PAGE_NUMBER}]]></expression></element>
+    </pageFooter>
+    <summary height="42" splitType="Stretch">
+        <element kind="staticText" uuid="3db76809-aaf6-4029-aeda-8bd4b0de73f2" x="500" y="6" width="220" height="30" forecolor="#17365D" fontName="Segoe UI" fontSize="12.0" bold="true" hTextAlign="Right"><text><![CDATA[Total Item Value (Rs.):]]></text></element>
+        <element kind="textField" pattern="#,##0.00" uuid="7bd6d744-d113-43fd-a6ac-e3ec76594961" x="720" y="6" width="82" height="30" forecolor="#17365D" fontName="Segoe UI" fontSize="12.0" bold="true" hTextAlign="Right"><expression><![CDATA[$V{TotalItemRevenue}]]></expression></element>
+    </summary>
+    <noData height="45" splitType="Stretch">
+        <element kind="staticText" uuid="190e043f-cc9c-4a8f-adde-c9328b4bb558" x="0" y="10" width="802" height="25" fontName="Segoe UI" fontSize="12.0" hTextAlign="Center"><text><![CDATA[No billable item records are available.]]></text></element>
+    </noData>
+</jasperReport>

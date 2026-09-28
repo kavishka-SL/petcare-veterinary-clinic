@@ -1,0 +1,77 @@
+<jasperReport name="TreatmentHistoryReport" language="java"
+        pageWidth="842" pageHeight="595" orientation="Landscape"
+        columnWidth="802" leftMargin="20" rightMargin="20"
+        topMargin="20" bottomMargin="20" whenNoDataType="NoDataSection"
+        uuid="7286cda7-0544-4dfb-9c68-af8fa6a1556b">
+
+    <style name="Base" fontName="Segoe UI" fontSize="8.0"/>
+    <style name="Header" style="Base" mode="Opaque" backcolor="#2F5597" forecolor="#FFFFFF" bold="true" hTextAlign="Center" vTextAlign="Middle"/>
+    <style name="Cell" style="Base" vTextAlign="Middle"/>
+
+    <query language="SQL"><![CDATA[
+SELECT
+    t.treatment_id,
+    t.treatment_date,
+    a.appointment_id AS appointment_number,
+    c.full_name AS customer_name,
+    p.pet_name,
+    v.full_name AS veterinarian_name,
+    t.diagnosis,
+    COALESCE(t.notes, '-') AS care_instructions
+FROM treatments t
+INNER JOIN appointments a ON t.appointment_id = a.appointment_id
+INNER JOIN pets p ON a.pet_id = p.pet_id
+INNER JOIN customers c ON p.customer_id = c.customer_id
+INNER JOIN veterinarians v ON a.veterinarian_id = v.veterinarian_id
+ORDER BY t.treatment_date DESC, t.treatment_id DESC
+    ]]></query>
+
+    <field name="treatment_id" class="java.lang.Integer"/>
+    <field name="treatment_date" class="java.sql.Date"/>
+    <field name="appointment_number" class="java.lang.Integer"/>
+    <field name="customer_name" class="java.lang.String"/>
+    <field name="pet_name" class="java.lang.String"/>
+    <field name="veterinarian_name" class="java.lang.String"/>
+    <field name="diagnosis" class="java.lang.String"/>
+    <field name="care_instructions" class="java.lang.String"/>
+
+    <background splitType="Stretch"/>
+    <title height="60" splitType="Stretch">
+        <element kind="staticText" uuid="c0d8e3fd-7c88-48f0-9fda-4f3be7fc385c" x="0" y="0" width="802" height="30" forecolor="#01043D" fontName="Segoe UI" fontSize="22.0" bold="true" hTextAlign="Center"><text><![CDATA[PetCare Veterinary Clinic]]></text></element>
+        <element kind="staticText" uuid="142350cb-6774-42b8-bcb5-4d088ee84117" x="0" y="35" width="802" height="20" fontName="Segoe UI" fontSize="12.0" hTextAlign="Center"><text><![CDATA[Treatment History Report]]></text></element>
+    </title>
+    <pageHeader height="20" splitType="Stretch">
+        <element kind="textField" uuid="307f19b0-0aa5-4673-91a0-e1940aa360eb" x="552" y="0" width="250" height="18" forecolor="#636363" fontName="Segoe UI" fontSize="9.0" hTextAlign="Right"><expression><![CDATA["Generated: " + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date())]]></expression></element>
+    </pageHeader>
+    <columnHeader height="30" splitType="Stretch">
+        <element kind="staticText" style="Header" uuid="047ef1e0-cae7-4da0-a6ca-33f54c674c88" x="0" y="0" width="55" height="30"><text><![CDATA[Treat ID]]></text></element>
+        <element kind="staticText" style="Header" uuid="5fba08fd-bbf5-4e9a-968e-301926b3bf1a" x="55" y="0" width="70" height="30"><text><![CDATA[Date]]></text></element>
+        <element kind="staticText" style="Header" uuid="5559f604-4ca0-4315-8070-92c62fd4ad32" x="125" y="0" width="55" height="30"><text><![CDATA[Appt ID]]></text></element>
+        <element kind="staticText" style="Header" uuid="7c1310ad-8330-428c-afab-5db28cd5ece8" x="180" y="0" width="110" height="30"><text><![CDATA[Customer]]></text></element>
+        <element kind="staticText" style="Header" uuid="d5b41a70-5dd2-4de0-9cba-dc4ff18e5276" x="290" y="0" width="75" height="30"><text><![CDATA[Pet]]></text></element>
+        <element kind="staticText" style="Header" uuid="4185a0f0-419f-4a64-9ced-5dc75be2e773" x="365" y="0" width="130" height="30"><text><![CDATA[Veterinarian]]></text></element>
+        <element kind="staticText" style="Header" uuid="ed1dc6df-7be6-4116-bdca-f32be749f199" x="495" y="0" width="150" height="30"><text><![CDATA[Diagnosis]]></text></element>
+        <element kind="staticText" style="Header" uuid="d0b91fe1-b288-4a5c-977c-f09b85e4010e" x="645" y="0" width="157" height="30"><text><![CDATA[Care Instructions]]></text></element>
+    </columnHeader>
+    <detail>
+        <band height="28" splitType="Stretch">
+            <element kind="textField" style="Cell" uuid="71576902-a2c9-4c70-aa10-47eb35cc85bb" x="0" y="0" width="55" height="28"><expression><![CDATA[$F{treatment_id}]]></expression></element>
+            <element kind="textField" style="Cell" pattern="yyyy-MM-dd" uuid="362a18d2-3854-4409-8750-fb9ad5056819" x="55" y="0" width="70" height="28"><expression><![CDATA[$F{treatment_date}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="f6474b43-f49e-40bc-b725-a435dd9dd6e4" x="125" y="0" width="55" height="28"><expression><![CDATA[$F{appointment_number}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="668b4d4d-9a57-4f39-995d-364ece66a147" x="180" y="0" width="110" height="28"><expression><![CDATA[$F{customer_name}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="68b4267f-4d4a-4d71-a9a2-3892fbcc1295" x="290" y="0" width="75" height="28"><expression><![CDATA[$F{pet_name}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="75eac99a-3b7f-400b-9ac0-d29e1755fac3" x="365" y="0" width="130" height="28"><expression><![CDATA[$F{veterinarian_name}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="4d6514ec-10d0-4c51-adbf-1bbdd6bc1e46" x="495" y="0" width="150" height="28"><expression><![CDATA[$F{diagnosis}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="017706aa-586a-457b-ad38-54b9bb409840" x="645" y="0" width="157" height="28"><expression><![CDATA[$F{care_instructions}]]></expression></element>
+        </band>
+    </detail>
+    <pageFooter height="24" splitType="Stretch">
+        <element kind="textField" uuid="279ac7d7-e244-41d4-974d-da54bd5f60f0" x="650" y="2" width="150" height="20" forecolor="#777777" fontSize="8.0" hTextAlign="Center"><expression><![CDATA["Page " + $V{PAGE_NUMBER}]]></expression></element>
+    </pageFooter>
+    <summary height="36" splitType="Stretch">
+        <element kind="textField" uuid="b3701bd8-1296-4a0d-b9a2-36e4ba6cdd61" x="550" y="4" width="250" height="28" forecolor="#17365D" fontName="Segoe UI" fontSize="12.0" bold="true" hTextAlign="Right"><expression><![CDATA["Total Treatments: " + $V{REPORT_COUNT}]]></expression></element>
+    </summary>
+    <noData height="45" splitType="Stretch">
+        <element kind="staticText" uuid="a42b28dc-599b-4ec9-9c12-7064eb98d680" x="0" y="10" width="802" height="25" fontName="Segoe UI" fontSize="12.0" hTextAlign="Center"><text><![CDATA[No treatment records are available.]]></text></element>
+    </noData>
+</jasperReport>

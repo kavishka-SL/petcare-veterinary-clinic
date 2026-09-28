@@ -1,0 +1,16 @@
+# NetBeans generated output
+/build/
+/dist/
+
+# Settings that belong only to this computer
+/nbproject/private/
+
+# Empty/generated test output
+/test/
+
+# Compiled and temporary files
+*.class
+*.log
+
+# Development database safety backups
+/database/vet_clinic_before_*.sql

@@ -1,0 +1,82 @@
+<jasperReport name="AppointmentScheduleReport" language="java"
+        pageWidth="842" pageHeight="595" orientation="Landscape"
+        columnWidth="802" leftMargin="20" rightMargin="20"
+        topMargin="20" bottomMargin="20" whenNoDataType="NoDataSection"
+        uuid="aa8c3811-7a15-4e41-a387-ad179e5fe011">
+
+    <style name="Base" fontName="Segoe UI" fontSize="8.0"/>
+    <style name="Header" style="Base" mode="Opaque" backcolor="#2F5597"
+            forecolor="#FFFFFF" bold="true" hTextAlign="Center" vTextAlign="Middle"/>
+    <style name="Cell" style="Base" vTextAlign="Middle"/>
+
+    <query language="SQL"><![CDATA[
+SELECT
+    a.appointment_id,
+    a.appointment_date,
+    TIME_FORMAT(a.appointment_time, '%H:%i') AS appointment_time,
+    c.full_name AS customer_name,
+    p.pet_name,
+    s.service_name,
+    v.full_name AS veterinarian_name,
+    COALESCE(a.symptoms, '-') AS symptoms,
+    a.status
+FROM appointments a
+INNER JOIN pets p ON a.pet_id = p.pet_id
+INNER JOIN customers c ON p.customer_id = c.customer_id
+INNER JOIN services s ON a.service_id = s.service_id
+INNER JOIN veterinarians v ON a.veterinarian_id = v.veterinarian_id
+ORDER BY a.appointment_date DESC, a.appointment_time DESC
+    ]]></query>
+
+    <field name="appointment_id" class="java.lang.Integer"/>
+    <field name="appointment_date" class="java.sql.Date"/>
+    <field name="appointment_time" class="java.lang.String"/>
+    <field name="customer_name" class="java.lang.String"/>
+    <field name="pet_name" class="java.lang.String"/>
+    <field name="service_name" class="java.lang.String"/>
+    <field name="veterinarian_name" class="java.lang.String"/>
+    <field name="symptoms" class="java.lang.String"/>
+    <field name="status" class="java.lang.String"/>
+
+    <background splitType="Stretch"/>
+    <title height="60" splitType="Stretch">
+        <element kind="staticText" uuid="6e079cc3-98df-4cc2-a5ec-b751cc64a701" x="0" y="0" width="802" height="30" forecolor="#01043D" fontName="Segoe UI" fontSize="22.0" bold="true" hTextAlign="Center"><text><![CDATA[PetCare Veterinary Clinic]]></text></element>
+        <element kind="staticText" uuid="20cc76d2-18f0-44d6-88fa-92e2fde5e75e" x="0" y="35" width="802" height="20" fontName="Segoe UI" fontSize="12.0" hTextAlign="Center"><text><![CDATA[Appointment Schedule Report]]></text></element>
+    </title>
+    <pageHeader height="20" splitType="Stretch">
+        <element kind="textField" uuid="2b989abf-04cd-42ac-a167-a597f75ef5b8" x="552" y="0" width="250" height="18" forecolor="#636363" fontName="Segoe UI" fontSize="9.0" hTextAlign="Right"><expression><![CDATA["Generated: " + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date())]]></expression></element>
+    </pageHeader>
+    <columnHeader height="30" splitType="Stretch">
+        <element kind="staticText" style="Header" uuid="7a81b1cd-f0a5-4452-a246-fc987666de34" x="0" y="0" width="55" height="30"><text><![CDATA[Appt ID]]></text></element>
+        <element kind="staticText" style="Header" uuid="19d81036-7463-4380-96e0-5826e508e2db" x="55" y="0" width="70" height="30"><text><![CDATA[Date]]></text></element>
+        <element kind="staticText" style="Header" uuid="c87fdccc-fccb-41f7-b0d6-29ff790c37df" x="125" y="0" width="50" height="30"><text><![CDATA[Time]]></text></element>
+        <element kind="staticText" style="Header" uuid="04866d2e-e3cf-48e1-beaa-0ac8c0d34374" x="175" y="0" width="105" height="30"><text><![CDATA[Customer]]></text></element>
+        <element kind="staticText" style="Header" uuid="ccf972cf-ec54-458e-9759-f3d917bed119" x="280" y="0" width="70" height="30"><text><![CDATA[Pet]]></text></element>
+        <element kind="staticText" style="Header" uuid="0208ebcb-8c48-4ecf-bf8d-0a83ca1a4e92" x="350" y="0" width="105" height="30"><text><![CDATA[Service]]></text></element>
+        <element kind="staticText" style="Header" uuid="58a3646d-8eab-46f8-9c7c-3b216284cf39" x="455" y="0" width="125" height="30"><text><![CDATA[Veterinarian]]></text></element>
+        <element kind="staticText" style="Header" uuid="572fe9cc-a183-4749-a02d-7d4a932a41ba" x="580" y="0" width="140" height="30"><text><![CDATA[Symptoms]]></text></element>
+        <element kind="staticText" style="Header" uuid="05d9baec-5b78-4bec-a3b2-5a898f721a7f" x="720" y="0" width="82" height="30"><text><![CDATA[Status]]></text></element>
+    </columnHeader>
+    <detail>
+        <band height="24" splitType="Stretch">
+            <element kind="textField" style="Cell" uuid="8a24efef-44b9-4b4d-8461-8809fe4ec9bf" x="0" y="0" width="55" height="24"><expression><![CDATA[$F{appointment_id}]]></expression></element>
+            <element kind="textField" style="Cell" pattern="yyyy-MM-dd" uuid="8e270543-b32f-45e5-9005-15b9cf47c3ed" x="55" y="0" width="70" height="24"><expression><![CDATA[$F{appointment_date}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="df862daa-a184-41b9-9cc8-eab9f6c52923" x="125" y="0" width="50" height="24"><expression><![CDATA[$F{appointment_time}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="b65118f4-4cd7-43b4-9372-94205dc0e3c2" x="175" y="0" width="105" height="24"><expression><![CDATA[$F{customer_name}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="62ecf757-c514-44c0-9345-3ba35b375146" x="280" y="0" width="70" height="24"><expression><![CDATA[$F{pet_name}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="5cc8d3b6-b87d-4829-a145-0a941c10b183" x="350" y="0" width="105" height="24"><expression><![CDATA[$F{service_name}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="864074b7-134e-44c8-985e-b9a088b9e18e" x="455" y="0" width="125" height="24"><expression><![CDATA[$F{veterinarian_name}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="43b59eb8-ad1d-45e1-909d-990b0ecf29bb" x="580" y="0" width="140" height="24"><expression><![CDATA[$F{symptoms}]]></expression></element>
+            <element kind="textField" style="Cell" uuid="7192113d-a025-4d36-8890-2ff73b6a1d8e" x="720" y="0" width="82" height="24"><expression><![CDATA[$F{status}]]></expression></element>
+        </band>
+    </detail>
+    <pageFooter height="24" splitType="Stretch">
+        <element kind="textField" uuid="70493dca-3711-4b22-968c-d66ab4e09422" x="650" y="2" width="150" height="20" forecolor="#777777" fontSize="8.0" hTextAlign="Center"><expression><![CDATA["Page " + $V{PAGE_NUMBER}]]></expression></element>
+    </pageFooter>
+    <summary height="36" splitType="Stretch">
+        <element kind="textField" uuid="acdcf860-f4d0-411b-b35b-ee2e38c585a5" x="550" y="4" width="250" height="28" forecolor="#17365D" fontName="Segoe UI" fontSize="12.0" bold="true" hTextAlign="Right"><expression><![CDATA["Total Appointments: " + $V{REPORT_COUNT}]]></expression></element>
+    </summary>
+    <noData height="45" splitType="Stretch">
+        <element kind="staticText" uuid="f53181ac-2b58-4eb4-84a5-ef686b2f1ddb" x="0" y="10" width="802" height="25" fontName="Segoe UI" fontSize="12.0" hTextAlign="Center"><text><![CDATA[No appointment records are available.]]></text></element>
+    </noData>
+</jasperReport>

@@ -1,0 +1,199 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="ClinicRevenueReport" language="java" columnCount="1" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="51e31de7-946f-4652-b3cd-dfa690241323">
+	<property name="com.jaspersoft.studio.data.sql.tables" value="cGF5bWVudHMgLDE1LDE1LDhkN2ZkMjIyLTlhNzctNGFlZC1hNTUwLTM2ZWYzZDRlMzM5ZTt2ZXRl&#xa;cmluYXJpYW5zICw1NzksMTUsNzY5ZDA4ZjQtOWEyOS00YTExLTllOGMtMTdkOTY1MDNjZTNlO2Fw&#xa;cG9pbnRtZW50cyAsMTM5LDE1LDFkNWQ3YzgwLWNlMDItNGI5MC04N2Y2LTM1ZjRlYTc3NGE5MDtj&#xa;dXN0b21lcnMgLDM2MSwxNSw3Yzc1YWNkOC1hZGU5LTRmMTItOTE5OS1kMDI2MDJmMjAwNGU7c2Vy&#xa;dmljZXMgLDQ3OSwxNSwxZjBlMjU0Ni1jYmQzLTQzZTktOWM0Ni04MTJmMmRhMzJkNTc7cGV0cyAs&#xa;MjgxLDE1LDU2ZWZjYjNmLTA3YzktNGZjNi1hOTBkLWJhMGNlYjY1MWFiMzs="/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PetCareDatabase.jrdax"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<query language="SQL"><![CDATA[SELECT
+    py.payment_id AS payment_id,
+    py.payment_date AS payment_date,
+    a.appointment_id AS appointment_number,
+    c.full_name AS customer_name,
+    p.pet_name AS pet_name,
+    s.service_name AS service_name,
+    v.full_name AS veterinarian_name,
+    py.payment_method AS payment_method,
+    py.amount AS amount
+FROM payments py
+INNER JOIN appointments a
+    ON py.appointment_id = a.appointment_id
+INNER JOIN pets p
+    ON a.pet_id = p.pet_id
+INNER JOIN customers c
+    ON p.customer_id = c.customer_id
+INNER JOIN services s
+    ON a.service_id = s.service_id
+INNER JOIN veterinarians v
+    ON a.veterinarian_id = v.veterinarian_id
+ORDER BY py.payment_date DESC, py.payment_id DESC]]></query>
+	<field name="payment_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="payment_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="payment_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payments"/>
+	</field>
+	<field name="payment_date" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="payment_date"/>
+		<property name="com.jaspersoft.studio.field.label" value="payment_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payments"/>
+	</field>
+	<field name="appointment_number" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="appointment_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="appointment_number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="appointments"/>
+	</field>
+	<field name="customer_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="full_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="customer_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="customers"/>
+	</field>
+	<field name="pet_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="pet_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="pet_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pets"/>
+	</field>
+	<field name="service_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="service_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="service_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="services"/>
+	</field>
+	<field name="veterinarian_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="full_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="veterinarian_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="veterinarians"/>
+	</field>
+	<field name="payment_method" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="payment_method"/>
+		<property name="com.jaspersoft.studio.field.label" value="payment_method"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payments"/>
+	</field>
+	<field name="amount" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="payments"/>
+	</field>
+	<variable name="TotalRevenue" calculation="Sum" class="java.math.BigDecimal">
+		<expression><![CDATA[$F{amount}]]></expression>
+		<initialValueExpression><![CDATA[java.math.BigDecimal.ZERO
+]]></initialValueExpression>
+	</variable>
+	<background splitType="Stretch"/>
+	<title height="60" splitType="Stretch">
+		<element kind="staticText" uuid="ac16eed9-f069-4b93-bda3-ba7aa6f2ec9e" x="-10" y="0" width="802" height="30" forecolor="#01043D" fontName="Segoe UI" fontSize="22.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[PetCare Veterinary Clinic]]></text>
+			<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+		</element>
+		<element kind="staticText" uuid="b8b9c641-a862-4ce3-b21d-599b01c6fd58" x="0" y="35" width="802" height="20" fontName="Segoe UI" fontSize="12.0" hTextAlign="Center">
+			<text><![CDATA[Clinic Revenue and Service Report]]></text>
+			<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</title>
+	<pageHeader height="20" splitType="Stretch">
+		<element kind="textField" uuid="b7267613-b3fa-41fb-91ce-8e5b69741c4e" x="552" y="0" width="250" height="18" forecolor="#636363" fontName="Segoe UI" fontSize="10.0" hTextAlign="Justified" vTextAlign="Middle">
+			<expression><![CDATA["Generated: " + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date())]]></expression>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</pageHeader>
+	<columnHeader height="30" splitType="Stretch">
+		<element kind="staticText" uuid="767d0660-524d-44f7-aaf3-696383d6a3ed" mode="Opaque" x="0" y="0" width="45" height="30" forecolor="#FFFFFF" backcolor="#2F5597" fontName="Segoe UI" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Pay ID]]></text>
+			<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+		</element>
+		<element kind="staticText" uuid="cdd3e8f5-9094-4ce2-b5c8-22f8588f66bb" mode="Opaque" x="115" y="0" width="55" height="30" forecolor="#FFFFFF" backcolor="#2F5597" fontName="Segoe UI" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Appt ID]]></text>
+		</element>
+		<element kind="staticText" uuid="d4e727be-0b94-4d17-be2e-95c82137a655" mode="Opaque" x="45" y="0" width="70" height="30" forecolor="#FFFFFF" backcolor="#2F5597" fontName="Segoe UI" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Date]]></text>
+		</element>
+		<element kind="staticText" uuid="ce55e831-39eb-4e19-87da-0dd39f360714" mode="Opaque" x="170" y="0" width="115" height="30" forecolor="#FFFFFF" backcolor="#2F5597" fontName="Segoe UI" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Customer]]></text>
+		</element>
+		<element kind="staticText" uuid="0e72395e-284a-4be6-81bc-ae965d42e0dc" mode="Opaque" x="285" y="0" width="70" height="30" forecolor="#FFFFFF" backcolor="#2F5597" fontName="Segoe UI" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Pet]]></text>
+		</element>
+		<element kind="staticText" uuid="60be6103-99fe-4616-892c-305a495a626c" mode="Opaque" x="355" y="0" width="115" height="30" forecolor="#FFFFFF" backcolor="#2F5597" fontName="Segoe UI" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Service]]></text>
+		</element>
+		<element kind="staticText" uuid="ed3d5d4c-32e9-4798-8765-57d84a769b25" mode="Opaque" x="470" y="0" width="135" height="30" forecolor="#FFFFFF" backcolor="#2F5597" fontName="Segoe UI" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Veterinarian]]></text>
+		</element>
+		<element kind="staticText" uuid="d343c8d2-14a1-4b33-89b6-4e9d8ff0abe2" mode="Opaque" x="605" y="0" width="80" height="30" forecolor="#FFFFFF" backcolor="#2F5597" fontName="Segoe UI" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Method]]></text>
+		</element>
+		<element kind="staticText" uuid="f046f282-5922-4c38-b707-2211f9700a28" mode="Opaque" x="685" y="0" width="117" height="30" forecolor="#FFFFFF" backcolor="#2F5597" fontName="Segoe UI" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Amount (Rs.)]]></text>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</columnHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<element kind="textField" uuid="93141bf3-0b46-420b-9c59-6601e1a27088" x="0" y="0" width="45" height="24" fontName="Segoe UI" fontSize="8.0">
+				<expression><![CDATA[$F{payment_id}]]></expression>
+			</element>
+			<element kind="textField" uuid="40705986-521f-4d9c-8a52-2ac4d081ccf0" x="45" y="0" width="70" height="24" fontName="Segoe UI" fontSize="8.0" pattern="yyyy-MM-dd">
+				<expression><![CDATA[$F{payment_date}]]></expression>
+			</element>
+			<element kind="textField" uuid="f1257e7a-f253-482e-8296-bf209246cc00" x="115" y="0" width="55" height="24" fontName="Segoe UI" fontSize="8.0">
+				<expression><![CDATA[$F{appointment_number}]]></expression>
+			</element>
+			<element kind="textField" uuid="dac00242-465f-4b5c-a180-8009f0dd1e8e" x="170" y="0" width="115" height="24" fontName="Segoe UI" fontSize="8.0">
+				<expression><![CDATA[$F{customer_name}]]></expression>
+			</element>
+			<element kind="textField" uuid="cab52514-e077-4fea-931f-dcea169ca5a6" x="285" y="0" width="70" height="24" fontName="Segoe UI" fontSize="8.0">
+				<expression><![CDATA[$F{pet_name}]]></expression>
+			</element>
+			<element kind="textField" uuid="1bb08c25-2576-4733-9732-ad13c32a5572" x="355" y="0" width="115" height="24" fontName="Segoe UI" fontSize="8.0">
+				<expression><![CDATA[$F{service_name}]]></expression>
+			</element>
+			<element kind="textField" uuid="3a15c59c-db98-4998-97c7-7803fa6c2b89" x="470" y="0" width="135" height="24" fontName="Segoe UI" fontSize="8.0">
+				<expression><![CDATA[$F{veterinarian_name}]]></expression>
+			</element>
+			<element kind="textField" uuid="80dd3349-6a1c-4cba-ac19-290824030769" x="605" y="0" width="80" height="24" fontName="Segoe UI" fontSize="8.0">
+				<expression><![CDATA[$F{payment_method}]]></expression>
+			</element>
+			<element kind="textField" uuid="efa51946-407c-4d27-b239-37094ab5947f" x="685" y="0" width="117" height="24" fontSize="8.0" pattern="#,##0.00">
+				<expression><![CDATA[$F{amount}]]></expression>
+			</element>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</detail>
+	<columnFooter splitType="Stretch">
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</columnFooter>
+	<pageFooter height="24" splitType="Stretch">
+		<element kind="textField" uuid="09bc636f-8e77-4e0c-94bf-6e59720405ec" x="650" y="2" width="150" height="20" forecolor="#999499" fontSize="8.0" hTextAlign="Center" vTextAlign="Middle">
+			<expression><![CDATA["Page " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</pageFooter>
+	<summary height="42" splitType="Stretch">
+		<element kind="textField" uuid="a5d504d3-fd69-4798-bd66-e1109580ace2" mode="Transparent" x="680" y="6" width="120" height="30" forecolor="#17365D" fontSize="12.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<expression><![CDATA[$V{TotalRevenue}]]></expression>
+		</element>
+		<element kind="staticText" uuid="79e29daa-0d99-4313-a932-877d846bb7da" mode="Opaque" x="500" y="6" width="170" height="30" forecolor="#17365D" fontName="Segoe UI" fontSize="12.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[Grand Total (Rs.):]]></text>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			<box>
+				<pen lineWidth="0.0" lineStyle="Solid" lineColor="#17365D"/>
+				<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#17365D"/>
+				<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#17365D"/>
+				<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#17365D"/>
+				<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#17365D"/>
+			</box>
+		</element>
+	</summary>
+</jasperReport>

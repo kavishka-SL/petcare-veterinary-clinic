@@ -1,0 +1,71 @@
+package ead_cw;
+
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.List;
+
+/**
+ * Controller class containing appointment billing business rules.
+ */
+public class BillingController {
+
+    private final BillingDAO billingDAO = new BillingDAO();
+
+    public List<BillingItem> getItems(int appointmentId)
+            throws SQLException {
+        return billingDAO.getItems(appointmentId);
+    }
+
+    public BigDecimal calculateTotal(List<BillingItem> items) {
+        return items.stream()
+                .map(BillingItem::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public void addItem(int appointmentId, int itemId, int quantity,
+            BigDecimal unitPrice)
+            throws SQLException, BillingValidationException {
+        validateIdsAndQuantity(appointmentId, itemId, quantity);
+        if (unitPrice == null || unitPrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BillingValidationException(
+                    "The selected item must have a valid price.");
+        }
+        if (!billingDAO.hasTreatment(appointmentId)) {
+            throw new BillingValidationException(
+                    "Save the treatment before adding billing items.");
+        }
+        ensureAppointmentIsNotPaid(appointmentId);
+        billingDAO.addItem(appointmentId, itemId, quantity, unitPrice);
+    }
+
+    public void removeItem(int lineId, int appointmentId)
+            throws SQLException, BillingValidationException {
+        if (lineId <= 0 || appointmentId <= 0) {
+            throw new BillingValidationException(
+                    "Please select a valid billing item.");
+        }
+        ensureAppointmentIsNotPaid(appointmentId);
+        billingDAO.removeItem(lineId, appointmentId);
+    }
+
+    private void validateIdsAndQuantity(int appointmentId, int itemId,
+            int quantity) throws BillingValidationException {
+        if (appointmentId <= 0 || itemId <= 0) {
+            throw new BillingValidationException(
+                    "Please select a valid appointment and billing item.");
+        }
+        if (quantity <= 0) {
+            throw new BillingValidationException(
+                    "Quantity must be greater than zero.");
+        }
+    }
+
+    private void ensureAppointmentIsNotPaid(int appointmentId)
+            throws SQLException, BillingValidationException {
+        if (billingDAO.hasPayment(appointmentId)) {
+            throw new BillingValidationException(
+                    "This appointment is already paid. "
+                    + "Its billing items cannot be changed.");
+        }
+    }
+}
