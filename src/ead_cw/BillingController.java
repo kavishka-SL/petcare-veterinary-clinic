@@ -9,17 +9,30 @@ import java.util.List;
  */
 public class BillingController {
 
-    private final BillingDAO billingDAO = new BillingDAO();
+    private final BillingModel model;
+    private final AppointmentBillingForm view;
+    private final BillingDAO billingDAO;
 
-    public List<BillingItem> getItems(int appointmentId)
-            throws SQLException {
-        return billingDAO.getItems(appointmentId);
+    public BillingController(BillingModel model,
+            AppointmentBillingForm view) {
+        this.model = model;
+        this.view = view;
+        this.billingDAO = new BillingDAO();
     }
 
-    public BigDecimal calculateTotal(List<BillingItem> items) {
-        return items.stream()
-                .map(BillingItem::getSubtotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    public void loadItems(int appointmentId) throws SQLException {
+        List<BillingItem> items = billingDAO.getItems(appointmentId);
+        model.setItems(items);
+        updateView();
+    }
+
+    public void clearItems() {
+        model.clearItems();
+        updateView();
+    }
+
+    private void updateView() {
+        view.displayBillingItems(model.getItems(), model.getFinalTotal());
     }
 
     public void addItem(int appointmentId, int itemId, int quantity,
@@ -36,6 +49,7 @@ public class BillingController {
         }
         ensureAppointmentIsNotPaid(appointmentId);
         billingDAO.addItem(appointmentId, itemId, quantity, unitPrice);
+        loadItems(appointmentId);
     }
 
     public void removeItem(int lineId, int appointmentId)
@@ -46,6 +60,7 @@ public class BillingController {
         }
         ensureAppointmentIsNotPaid(appointmentId);
         billingDAO.removeItem(lineId, appointmentId);
+        loadItems(appointmentId);
     }
 
     private void validateIdsAndQuantity(int appointmentId, int itemId,

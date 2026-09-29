@@ -26,8 +26,8 @@ public class AppointmentBillingForm extends javax.swing.JFrame {
     private final Map<Integer, String> appointmentDisplays = new HashMap<>();
     private final Map<String, Integer> itemIds = new HashMap<>();
     private final Map<String, BigDecimal> itemPrices = new HashMap<>();
-    private final BillingController billingController =
-            new BillingController();
+    private final BillingModel billingModel;
+    private final BillingController billingController;
     private final Integer previousAppointmentId;
     private final boolean openedFromTreatment;
     
@@ -49,6 +49,8 @@ public class AppointmentBillingForm extends javax.swing.JFrame {
         previousAppointmentId = selectedAppointmentId;
         openedFromTreatment = cameFromTreatment;
         initComponents();
+        billingModel = new BillingModel();
+        billingController = new BillingController(billingModel, this);
         setLocationRelativeTo(null);
         tblAppointmentItems.setDefaultEditor(Object.class, null);
         if (UserSession.hasRole("VETERINARIAN")) {
@@ -137,7 +139,7 @@ public class AppointmentBillingForm extends javax.swing.JFrame {
 
         if (appointmentId == null) {
             txtService.setText("");
-            clearBillingTable();
+            billingController.clearItems();
             return;
         }
 
@@ -197,34 +199,34 @@ public class AppointmentBillingForm extends javax.swing.JFrame {
     }
 
     private void loadAppointmentItems(int appointmentId) {
-        clearBillingTable();
-        DefaultTableModel model =
-                (DefaultTableModel) tblAppointmentItems.getModel();
-
         try {
-            List<BillingItem> items =
-                    billingController.getItems(appointmentId);
-
-            for (BillingItem item : items) {
-                model.addRow(new Object[]{
-                    item.getLineId(),
-                    item.getItemName(),
-                    item.getItemType(),
-                    item.getUnitName(),
-                    item.getQuantity(),
-                    item.getUnitPrice(),
-                    item.getSubtotal()
-                });
-            }
-
-            BigDecimal finalTotal =
-                    billingController.calculateTotal(items);
-            txtFinalTotal.setText(finalTotal.toPlainString());
+            billingController.loadItems(appointmentId);
         } catch (SQLException exception) {
             JOptionPane.showMessageDialog(this,
                     "Unable to load appointment items: "
                     + exception.getMessage());
         }
+    }
+
+    public void displayBillingItems(List<BillingItem> items,
+            BigDecimal finalTotal) {
+        clearBillingTable();
+        DefaultTableModel tableModel =
+                (DefaultTableModel) tblAppointmentItems.getModel();
+
+        for (BillingItem item : items) {
+            tableModel.addRow(new Object[]{
+                item.getLineId(),
+                item.getItemName(),
+                item.getItemType(),
+                item.getUnitName(),
+                item.getQuantity(),
+                item.getUnitPrice(),
+                item.getSubtotal()
+            });
+        }
+
+        txtFinalTotal.setText(finalTotal.toPlainString());
     }
 
     private void clearItemFields() {
@@ -519,7 +521,6 @@ public class AppointmentBillingForm extends javax.swing.JFrame {
             billingController.removeItem(lineId, appointmentId);
             JOptionPane.showMessageDialog(this,
                     "Item removed successfully.");
-            loadAppointmentItems(appointmentId);
         } catch (BillingValidationException exception) {
             JOptionPane.showMessageDialog(this, exception.getMessage());
         } catch (SQLException exception) {
@@ -575,7 +576,6 @@ public class AppointmentBillingForm extends javax.swing.JFrame {
                     appointmentId, itemId, quantity, unitPrice);
             JOptionPane.showMessageDialog(this,
                     "Item added successfully.");
-            loadAppointmentItems(appointmentId);
             clearItemFields();
         } catch (BillingValidationException exception) {
             JOptionPane.showMessageDialog(this, exception.getMessage());
