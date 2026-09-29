@@ -1,5 +1,6 @@
-package ead_cw;
+package ead_cw.mvc;
 
+import ead_cw.AppointmentBillingForm;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;

@@ -1,4 +1,4 @@
-package ead_cw;
+package ead_cw.mvc;
 
 /**
  * User-defined exception for appointment billing business rules.

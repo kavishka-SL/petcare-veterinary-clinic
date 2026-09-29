@@ -1,5 +1,6 @@
-package ead_cw;
+package ead_cw.mvc;
 
+import ead_cw.DBConnection;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
