@@ -4,6 +4,7 @@
  */
 package ead_cw;
 
+import ead_cw.session.UserSession;
 import javax.swing.JOptionPane;
 
 /**

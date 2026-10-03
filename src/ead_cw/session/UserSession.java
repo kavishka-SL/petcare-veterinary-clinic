@@ -1,4 +1,4 @@
-package ead_cw;
+package ead_cw.session;
 
 /**
  * Stores the currently logged-in user while the application is running.

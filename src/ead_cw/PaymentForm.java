@@ -4,6 +4,7 @@
  */
 package ead_cw;
 
+import ead_cw.database.DBConnection;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;

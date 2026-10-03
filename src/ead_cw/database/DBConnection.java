@@ -1,4 +1,4 @@
-package ead_cw;
+package ead_cw.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

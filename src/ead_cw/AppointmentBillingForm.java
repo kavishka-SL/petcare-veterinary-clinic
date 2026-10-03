@@ -4,10 +4,12 @@
  */
 package ead_cw;
 
+import ead_cw.database.DBConnection;
 import ead_cw.mvc.BillingController;
 import ead_cw.mvc.BillingItem;
 import ead_cw.mvc.BillingModel;
 import ead_cw.mvc.BillingValidationException;
+import ead_cw.session.UserSession;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
