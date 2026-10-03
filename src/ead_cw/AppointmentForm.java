@@ -5,6 +5,10 @@
 package ead_cw;
 
 import ead_cw.database.DBConnection;
+import ead_cw.notification.EmailService;
+import ead_cw.notification.EmailService.AppointmentEmailType;
+import ead_cw.notification.EmailService.EmailResult;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -575,14 +579,33 @@ public class AppointmentForm extends javax.swing.JFrame {
                 statement.setString(7, status);
                 statement.executeUpdate();
             }
-
-            JOptionPane.showMessageDialog(this,
-                    "Appointment added successfully.");
-            clearFields();
-            loadAppointments();
         } catch (SQLException exception) {
             showDatabaseError("add appointment", exception);
+            return;
         }
+
+        String message = "Appointment added successfully.";
+
+        try {
+            EmailService emailService = new EmailService();
+            EmailResult result = emailService.sendAppointmentConfirmation(
+                    petId, veterinarianId, serviceId, date, time);
+
+            if (result == EmailResult.SENT) {
+                message += "\nConfirmation email sent successfully.";
+            } else if (result == EmailResult.NO_CUSTOMER_EMAIL) {
+                message += "\nNo customer email is available.";
+            } else {
+                message += "\nEmail notification is not configured.";
+            }
+        } catch (SQLException | IOException exception) {
+            message += "\nThe confirmation email could not be sent: "
+                    + exception.getMessage();
+        }
+
+        JOptionPane.showMessageDialog(this, message);
+        clearFields();
+        loadAppointments();
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
@@ -650,13 +673,42 @@ public class AppointmentForm extends javax.swing.JFrame {
                 statement.executeUpdate();
             }
 
-            JOptionPane.showMessageDialog(this,
-                    "Appointment updated successfully.");
-            clearFields();
-            loadAppointments();
         } catch (SQLException exception) {
             showDatabaseError("update appointment", exception);
+            return;
         }
+
+        AppointmentEmailType emailType;
+        if ("CANCELLED".equals(status)) {
+            emailType = AppointmentEmailType.CANCELLED;
+        } else if ("COMPLETED".equals(status)) {
+            emailType = AppointmentEmailType.COMPLETED;
+        } else {
+            emailType = AppointmentEmailType.UPDATED;
+        }
+
+        String message = "Appointment updated successfully.";
+
+        try {
+            EmailService emailService = new EmailService();
+            EmailResult result = emailService.sendAppointmentNotification(
+                    petId, veterinarianId, serviceId, date, time, emailType);
+
+            if (result == EmailResult.SENT) {
+                message += "\nCustomer notification email sent successfully.";
+            } else if (result == EmailResult.NO_CUSTOMER_EMAIL) {
+                message += "\nNo customer email is available.";
+            } else {
+                message += "\nEmail notification is not configured.";
+            }
+        } catch (SQLException | IOException exception) {
+            message += "\nThe customer email could not be sent: "
+                    + exception.getMessage();
+        }
+
+        JOptionPane.showMessageDialog(this, message);
+        clearFields();
+        loadAppointments();
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
@@ -669,6 +721,29 @@ public class AppointmentForm extends javax.swing.JFrame {
 
         int appointmentId = Integer.parseInt(
                 tblAppointments.getValueAt(selectedRow, 0).toString());
+
+        Integer petId = petIds.get((String) cmbPet.getSelectedItem());
+        Integer veterinarianId = veterinarianIds.get(
+                (String) cmbVeterinarian.getSelectedItem());
+        Integer serviceId = serviceIds.get(
+                (String) cmbService.getSelectedItem());
+
+        Date date;
+        Time time;
+        try {
+            date = readAppointmentDate();
+            time = readAppointmentTime();
+        } catch (DateTimeParseException | IllegalArgumentException exception) {
+            JOptionPane.showMessageDialog(this,
+                    "Unable to read the selected appointment date and time.");
+            return;
+        }
+
+        if (petId == null || veterinarianId == null || serviceId == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Unable to read the selected appointment details.");
+            return;
+        }
 
         String checkSql = "SELECT "
                 + "(SELECT COUNT(*) FROM treatments WHERE appointment_id = ?) + "
@@ -712,13 +787,34 @@ public class AppointmentForm extends javax.swing.JFrame {
                 deleteStatement.executeUpdate();
             }
 
-            JOptionPane.showMessageDialog(this,
-                    "Appointment deleted successfully.");
-            clearFields();
-            loadAppointments();
         } catch (SQLException exception) {
             showDatabaseError("delete appointment", exception);
+            return;
         }
+
+        String message = "Appointment deleted successfully.";
+
+        try {
+            EmailService emailService = new EmailService();
+            EmailResult result = emailService.sendAppointmentNotification(
+                    petId, veterinarianId, serviceId, date, time,
+                    AppointmentEmailType.DELETED);
+
+            if (result == EmailResult.SENT) {
+                message += "\nCustomer notification email sent successfully.";
+            } else if (result == EmailResult.NO_CUSTOMER_EMAIL) {
+                message += "\nNo customer email is available.";
+            } else {
+                message += "\nEmail notification is not configured.";
+            }
+        } catch (SQLException | IOException exception) {
+            message += "\nThe customer email could not be sent: "
+                    + exception.getMessage();
+        }
+
+        JOptionPane.showMessageDialog(this, message);
+        clearFields();
+        loadAppointments();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed

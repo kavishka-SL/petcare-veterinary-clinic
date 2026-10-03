@@ -5,7 +5,11 @@
 package ead_cw;
 
 import ead_cw.database.DBConnection;
+import ead_cw.notification.EmailService;
+import ead_cw.notification.EmailService.AppointmentEmailType;
+import ead_cw.notification.EmailService.EmailResult;
 import ead_cw.session.UserSession;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -467,13 +471,34 @@ public class TreatmentForm extends javax.swing.JFrame {
                 throw exception;
             }
 
-            JOptionPane.showMessageDialog(this,
-                    "Treatment saved successfully.");
-            clearFields();
-            loadTreatments();
         } catch (SQLException exception) {
             showDatabaseError("save treatment", exception);
+            return;
         }
+
+        String message = "Treatment saved successfully."
+                + "\nAppointment marked as completed.";
+
+        try {
+            EmailService emailService = new EmailService();
+            EmailResult result = emailService.sendAppointmentNotification(
+                    appointmentId, AppointmentEmailType.COMPLETED);
+
+            if (result == EmailResult.SENT) {
+                message += "\nCompletion email sent successfully.";
+            } else if (result == EmailResult.NO_CUSTOMER_EMAIL) {
+                message += "\nNo customer email is available.";
+            } else {
+                message += "\nEmail notification is not configured.";
+            }
+        } catch (SQLException | IOException exception) {
+            message += "\nThe completion email could not be sent: "
+                    + exception.getMessage();
+        }
+
+        JOptionPane.showMessageDialog(this, message);
+        clearFields();
+        loadTreatments();
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
